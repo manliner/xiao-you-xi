@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+ th, td {
+  border: 1px solid black;
+  text-align: center;
+  vertical-align: middle;
+  border-radius: 10px;
+  font-size: x-large;
+  font-family:cursive;
+}
+table{color: aliceblue;}
+body {
+  background-image: url(背景9.png);
+  background-repeat: no-repeat;
+  background-size: cover;
+  
+}
+#resetButton {
+  padding: 10px 20px;
+  font-size: 16px;
+  color: white;
+  background-color: #8b64df; /* for example */
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+</style>
+
+</head>
+
+<body>
+  <p id="hints"></p>
+<div style="display: flex; justify-content: space-between;">       
+<table id="gameTable" style="width: 50%;height: 80vh;margin: auto">
+  <tr>
+    <td>催婚</td>
+    <td>买房</td>
+    <td>催生</td>
+    <td>房租</td>
+    <td>人情</td>
+  </tr>
+  <tr>
+    <td>内耗</td>
+    <td>考研</td>
+    <td>工作</td>
+    <td>DDL</td>
+    <td>焦虑</td>
+  </tr>
+  <tr>
+    <td>敏感</td>
+    <td>贷款</td>
+    <td>迷茫</td>
+    <td>社交</td>
+    <td>KPI</td>
+  </tr>
+  <tr>
+    <td>竞争</td>
+    <td>容貌</td>
+    <td>身材</td>
+    <td>熬夜</td>
+    <td>疲惫</td>
+  </tr>
+  
+</table>
+<button id="resetButton">重新开始</button>
+</div>
+<script>
+  //背景颜色随机
+  window.onload = function() {
+    var cells = document.getElementsByTagName('td');
+    for (var i = 0; i < cells.length; i++) {
+      cells[i].style.backgroundColor = getRandomColor();
+    }
+  }
+    function getRandomColor() {
+    var letters = '0123456789ABCDEF';
+    var color = '#';
+    for (var i = 0; i < 6; i++) {
+      color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+  }
+  var keyword = '';
+  var round = 0;
+  var gameInterval;
+  var originalCellContents = []; 
+  window.onload = function() {
+  var cells = document.getElementsByTagName('td');
+  for (var i = 0; i < cells.length; i++) {
+    originalCellContents[i] = cells[i].innerText; // Store original contents
+    cells[i].style.backgroundColor = getRandomColor();
+    cells[i].addEventListener('click', function() {
+      if (this.innerText === keyword) {
+        this.innerText = '';
+        this.style.backgroundColor = '#FFFFFF';
+      }
+    });
+  }
+  gameInterval = setInterval(startRound, 5000);
+  document.getElementById('resetButton').addEventListener('click', resetGame);
+}
+  function startRound() {
+  if (round === 5) {
+    clearInterval(gameInterval);
+    alert('希望你天天开心');
+    return;
+  }
+  var cells = document.getElementsByTagName('td');
+  var availableCells = [];
+  var cellContents = [];
+  for (var i = 0; i < cells.length; i++) {
+    if (cells[i].innerText !== '') {
+      availableCells.push(cells[i]);
+      cellContents.push(cells[i].innerText);
+    }
+  }
+  if (availableCells.length === 0) {
+    clearInterval(gameInterval);
+    alert('You won the game!');
+    return;
+  }
+  var randomCell = availableCells[Math.floor(Math.random() * availableCells.length)];
+  keyword = randomCell.innerText;
+  round++;
+
+  // Shuffle cell contents
+  cellContents = shuffleArray(cellContents);
+  for (var i = 0; i < availableCells.length; i++) {
+    availableCells[i].innerText = cellContents[i];
+  }
+
+  alert('Round ' + round + ': The keyword is ' + keyword);
+}
+
+// Function to shuffle an array
+function shuffleArray(array) {
+  for (var i = array.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var temp = array[i];
+    array[i] = array[j];
+    array[j] = temp;
+  }
+  return array;
+}
+function resetGame() {
+  // Reset variables
+  keyword = '';
+  round = 0;
+  
+  // Clear interval if it's running
+  if (gameInterval) {
+    clearInterval(gameInterval);
+  }
+  
+  // Reset cell contents and colors
+  var cells = document.getElementsByTagName('td');
+  for (var i = 0; i < cells.length; i++) {
+    cells[i].innerText = originalCellContents[i]; // Assuming you have stored the original contents
+    cells[i].style.backgroundColor = getRandomColor();
+  }
+  
+  // Start the game
+  gameInterval = setInterval(startRound, 5000);
+}
+
+  
+</script>
+
+</body>
+</html>
